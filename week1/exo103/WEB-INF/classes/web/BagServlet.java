@@ -19,6 +19,7 @@ public class BagServlet extends HttpServlet {
 	throws ServletException, IOException {
 		res.setContentType( "text/html" );
 		PrintWriter out = res.getWriter();
+
 		HttpSession session = req.getSession();
 
 		Bag bag = (Bag) session.getAttribute("bag");
@@ -70,7 +71,7 @@ public class BagServlet extends HttpServlet {
 		else {
 		  bag.setItem(ref,qtyInt);
 			session.setAttribute("bag",bag);
-			res.sendRedirect("bag");
+			res.sendRedirect(req.getContextPath() + "/bag.jsp");
 
 		}
 
