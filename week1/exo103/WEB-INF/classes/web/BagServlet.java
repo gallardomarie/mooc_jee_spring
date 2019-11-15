@@ -37,18 +37,28 @@ public class BagServlet extends HttpServlet {
 		String ref = req.getParameter("ref");
 		String qty = req.getParameter("qty");
 
-		if((ref==null) || (qty==null) || ref.equals("") || qty.equals("")){
+		try{
+			int qtyInt = Integer.parseInt(qty);
+			if((ref==null) || (qty==null) || ref.equals("") || qty.equals("")){
+				out.println("<html><body>");
+				out.println("Une erreur a été rencontrée !!");
+				out.println("</body></html>");
+				res.setStatus(400);
+			}
+			else{
+				out.println("<html><body>");
+				out.println("<p>"+ref+"</p>");
+				out.println("<p>"+qty+"</p>");
+				out.println("</body></html>");
+			}
+		}
+		catch (Exception e) {
 			out.println("<html><body>");
 			out.println("Une erreur a été rencontrée !!");
 			out.println("</body></html>");
 			res.setStatus(400);
 		}
-		else{
-			out.println("<html><body>");
-			out.println("<p>"+ref+"</p>");
-			out.println("<p>"+qty+"</p>");
-			out.println("</body></html>");
-		}
+
 		// TODO : Get parameters, check null
 
 		// TODO : print reference and quantity
