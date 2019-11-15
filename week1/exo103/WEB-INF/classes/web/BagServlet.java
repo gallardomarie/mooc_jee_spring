@@ -20,10 +20,11 @@ public class BagServlet extends HttpServlet {
 		res.setContentType( "text/html" );
 		PrintWriter out = res.getWriter();
 		out.println("<html><body>");
+		myBag.print(out);
 		out.println("<form action='bag' method='post'>");
 		out.println("Référence <input name='ref'><p>");
 		out.println("Quantity <input name='qty'><p>");
-		out.println("<input type='submit' value='Valider'/>");
+		out.println("<input type='submit' value='Ajouter ce produit au panier'/>");
 		out.println("</form>");
 		out.println("</body></html>");
 	}
@@ -33,7 +34,31 @@ public class BagServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse res)
 	throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
-		res.setContentType( "text/html" );
+
+		String ref = req.getParameter("ref");
+		String qty = req.getParameter("qty");
+		int qtyInt = -1;
+
+		try{
+			qtyInt = Integer.parseInt(qty);
+		}
+		catch (Exception e){
+			qty = "";
+		}
+
+		if((ref==null) || (qty==null) || ref.equals("") || qty.equals("") || (qtyInt<0)){
+			out.println("<html><body>");
+			out.println("Une erreur a été rencontrée !!");
+			out.println("</body></html>");
+			res.setStatus(400);
+		}
+		else {
+			myBag.setItem(ref,qtyInt);
+			res.sendRedirect("bag");
+
+		}
+
+		/*
 		String ref = req.getParameter("ref");
 		String qty = req.getParameter("qty");
 
@@ -58,7 +83,7 @@ public class BagServlet extends HttpServlet {
 			out.println("</body></html>");
 			res.setStatus(400);
 		}
-
+*/
 		// TODO : Get parameters, check null
 
 		// TODO : print reference and quantity
