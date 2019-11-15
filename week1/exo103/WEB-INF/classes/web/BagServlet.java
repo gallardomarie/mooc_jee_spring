@@ -19,14 +19,23 @@ public class BagServlet extends HttpServlet {
 	throws ServletException, IOException {
 		res.setContentType( "text/html" );
 		PrintWriter out = res.getWriter();
+		HttpSession session = req.getSession();
+
+		Bag bag = (Bag) session.getAttribute("bag");
 		out.println("<html><body>");
-		myBag.print(out);
+		try{
+			bag.print(out);
+		}
+		catch (Exception e){
+			out.println("Le panier est vide");
+		}
 		out.println("<form action='bag' method='post'>");
 		out.println("Référence <input name='ref'><p>");
 		out.println("Quantity <input name='qty'><p>");
 		out.println("<input type='submit' value='Ajouter ce produit au panier'/>");
 		out.println("</form>");
 		out.println("</body></html>");
+
 	}
 
 
@@ -34,6 +43,12 @@ public class BagServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse res)
 	throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
+		HttpSession session = req.getSession();
+		Bag bag = (Bag) session.getAttribute("bag");
+		if(bag == null){
+			session.setAttribute("bag",new Bag());
+			bag = (Bag) session.getAttribute("bag");
+		}
 
 		String ref = req.getParameter("ref");
 		String qty = req.getParameter("qty");
@@ -53,7 +68,8 @@ public class BagServlet extends HttpServlet {
 			res.setStatus(400);
 		}
 		else {
-			myBag.setItem(ref,qtyInt);
+		  bag.setItem(ref,qtyInt);
+			session.setAttribute("bag",bag);
 			res.sendRedirect("bag");
 
 		}
