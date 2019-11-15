@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 public class BagServlet extends HttpServlet {
 
 	Bag myBag = new Bag();
+	public static String jspView = "/WEB-INF/bag.jsp";
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)
 	throws ServletException, IOException {
@@ -23,19 +24,14 @@ public class BagServlet extends HttpServlet {
 		HttpSession session = req.getSession();
 
 		Bag bag = (Bag) session.getAttribute("bag");
-		out.println("<html><body>");
-		try{
-			bag.print(out);
+		if( bag ==null){
+			session.setAttribute("bag", new Bag());
+			bag = (Bag) session.getAttribute("bag");
 		}
-		catch (Exception e){
-			out.println("Le panier est vide");
-		}
-		out.println("<form action='bag' method='post'>");
-		out.println("Référence <input name='ref'><p>");
-		out.println("Quantity <input name='qty'><p>");
-		out.println("<input type='submit' value='Ajouter ce produit au panier'/>");
-		out.println("</form>");
-		out.println("</body></html>");
+		req.setAttribute("bag",bag);
+
+		req.getRequestDispatcher(this.jspView).forward(req, res);
+
 
 	}
 
@@ -71,7 +67,7 @@ public class BagServlet extends HttpServlet {
 		else {
 		  bag.setItem(ref,qtyInt);
 			session.setAttribute("bag",bag);
-			res.sendRedirect(req.getContextPath() + "/bag.jsp");
+			res.sendRedirect("bag");
 
 		}
 
